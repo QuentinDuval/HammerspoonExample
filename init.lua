@@ -58,18 +58,23 @@ end
 -- Search in the browser
 -- *****************************
 
+
+function search_in_google(content)
+    local browser = hs.application.open("Google Chrome", 0.1, true)
+    browser:activate()
+    hs.eventtap.keyStroke({"cmd"}, "t") -- open a new tab
+    hs.eventtap.keyStrokes("http://www.google.fr/search?q=" .. content) -- search in google
+    hs.eventtap.keyStroke({}, "return") -- run the search
+end
+
+
 hs.hotkey.bind({"cmd", "alt"}, "s", function()
-    content = copy_selected_text()
+    local content = copy_selected_text()
     -- Demo on how to do pattern matching
     if content:find('DEF') == 1 then
         hs.alert.show("DEF")
     else
-        hs.alert.show(content)
-        local browser = hs.application.open("Google Chrome", 0.5, true)
-        browser:activate()
-        hs.eventtap.keyStroke({"cmd"}, "t") -- open a new tab
-        hs.eventtap.keyStrokes("http://www.google.fr/search?q=" .. content) -- search in google
-        hs.eventtap.keyStroke({}, "return") -- run the search
+        search_in_google(content)
     end
 end)
 
@@ -79,6 +84,11 @@ end)
 -- *****************************
 
 
+function on_search()
+    local content = copy_selected_text()
+    search_in_google(content)
+end
+
 function on_clicked()
     hs.alert.show("Clicked!")
 end
@@ -86,7 +96,7 @@ end
 hs.hotkey.bind({"cmd", "alt"}, "W", function()
     local menubar = hs.menubar.new()
     menubar:setMenu({
-        { title = "my menu item", fn = on_clicked },
+        { title = "search", fn = on_search },
         { title = "-" },
         { title = "other item", fn = on_clicked },
     })
