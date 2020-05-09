@@ -42,6 +42,15 @@ function copy_selected_text()
     return get_selected_text()
 end
 
+function get_window_name()
+    local window = hs.window.focusedWindow()
+    if window then
+        return window:title()
+    else
+        return ""
+    end
+end
+
 
 -- *****************************
 -- Example to run apple script
@@ -94,11 +103,12 @@ function on_clicked()
 end
 
 hs.hotkey.bind({"cmd", "alt"}, "W", function()
+    local window_name = get_window_name()
     local menubar = hs.menubar.new()
     menubar:setMenu({
         { title = "search", fn = on_search },
         { title = "-" },
-        { title = "other item", fn = on_clicked },
+        { title = window_name, fn = on_clicked },
     })
     local position_point = hs.mouse.getAbsolutePosition()
     menubar:popupMenu(position_point)
