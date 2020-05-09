@@ -51,6 +51,13 @@ function get_window_name()
     end
 end
 
+function pop_up_menu_at_mouse(menu_items)
+    local menubar = hs.menubar.new()
+    menubar:setMenu(menu_items)
+    local position_point = hs.mouse.getAbsolutePosition()
+    menubar:popupMenu(position_point)
+end
+
 
 -- *****************************
 -- Example to run apple script
@@ -88,9 +95,9 @@ hs.hotkey.bind({"cmd", "alt"}, "s", function()
 end)
 
 
--- *****************************
--- Pop up a menu
--- *****************************
+-- ****************************************************
+-- Pop up a menu contextual to the window we are in
+-- ****************************************************
 
 
 function on_search()
@@ -102,16 +109,44 @@ function on_clicked()
     hs.alert.show("Clicked!")
 end
 
-hs.hotkey.bind({"cmd", "alt"}, "W", function()
-    local window_name = get_window_name()
-    local menubar = hs.menubar.new()
-    menubar:setMenu({
+function jupyter_standard_imports()
+    text = [[
+import math 
+import matplotplit.pyplot as plt 
+import numpy as np
+import torch
+import torch.nn as nn
+import torch.optim as optim
+import torch.utils.data as data]]
+    hs.pasteboard.setContents(hs.pasteboard.getContents(), "TEMP")
+    hs.pasteboard.writeObjects(text)
+    hs.eventtap.keyStroke("cmd", "v")
+    hs.pasteboard.setContents(hs.pasteboard.getContents("TEMP"))
+end
+
+function pop_up_jupyter_menu()
+    pop_up_menu_at_mouse({
+        { title = "search", fn = on_search },
+        { title = "-" },
+        { title = "standard imports", fn = jupyter_standard_imports },
+    })
+end
+
+function pop_up_default_menu()
+    pop_up_menu_at_mouse({
         { title = "search", fn = on_search },
         { title = "-" },
         { title = window_name, fn = on_clicked },
     })
-    local position_point = hs.mouse.getAbsolutePosition()
-    menubar:popupMenu(position_point)
+end
+
+hs.hotkey.bind({"cmd", "alt"}, "W", function()
+    local window_name = get_window_name()
+    if window_name:find('JupyterLab') == 1 then
+        pop_up_jupyter_menu()
+    else
+        pop_up_default_menu()
+    end
 end)
 
 
