@@ -29,6 +29,12 @@ function paste()
     hs.eventtap.keyStroke({"cmd"}, "v")
 end
 
+function with_temporary_copy(fn)
+    hs.pasteboard.setContents(hs.pasteboard.getContents(), "TEMP")
+    fn()
+    hs.pasteboard.setContents(hs.pasteboard.getContents("TEMP"))
+end
+
 function get_selected_text()
     return hs.pasteboard.getContents()
 end

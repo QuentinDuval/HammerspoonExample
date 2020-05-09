@@ -52,10 +52,10 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import torch.utils.data as data]]
-    hs.pasteboard.setContents(hs.pasteboard.getContents(), "TEMP")
-    hs.pasteboard.writeObjects(text)
-    hs.eventtap.keyStroke("cmd", "v")
-    hs.pasteboard.setContents(hs.pasteboard.getContents("TEMP"))
+    with_temporary_copy(function()
+        hs.pasteboard.writeObjects(text)
+        paste()
+    end)
 end
 
 function pop_up_jupyter_menu()
@@ -70,7 +70,7 @@ function pop_up_default_menu()
     pop_up_menu_at_mouse({
         { title = "search", fn = on_search },
         { title = "-" },
-        { title = window_name, fn = on_clicked },
+        { title = "click", fn = on_clicked },
     })
 end
 
