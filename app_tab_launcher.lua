@@ -23,6 +23,13 @@ function search_ap_or_tab()
                 chrome_switch_to_tab("Jupyter")
             end
         },
+        {
+            text="tensorboard",
+            subText="open tensorboard tab",
+            fct=function()
+                chrome_switch_to_tab("TensorBoard")
+            end
+        },
     }}
     expander:show()
 end
