@@ -23,13 +23,14 @@ function Expander:add_choice(text, subText, fct)
 end
 
 function Expander:apply_rule(input)
-    for i, o in ipairs(self.options) do
-        if o.text == input then
-            if o.fct ~= nil then
-                o.fct()
-            else
-                write_lines(o.content)
-            end
+    local rule = hs.fnutils.find(self.options, function(o)
+        return o.text == input
+    end)
+    if rule ~= nil then
+        if rule.fct ~= nil then
+            rule.fct()
+        else
+            write_lines(rule.content)
         end
     end
 end
