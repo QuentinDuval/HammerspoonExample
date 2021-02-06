@@ -54,23 +54,6 @@ end)
 
 
 -- *****************************
--- Alternate copy-paste, in order to keep info
--- *****************************
-
-hs.hotkey.bind({"cmd", "alt"}, "c", nil, function()
-    with_temporary_copy(function()
-        local text = copy_selected_text()
-        hs.pasteboard.setContents(text, "Copy2")
-    end)
-end)
-
-
-hs.hotkey.bind({"cmd", "alt"}, "v", nil, function()
-    write_lines(hs.pasteboard.getContents("Copy2"))
-end)
-
-
--- *****************************
 -- Kind of text expander
 -- *****************************
 
