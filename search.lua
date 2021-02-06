@@ -1,11 +1,11 @@
-require "core.chrome";
-require "core.utils";
-
-
 --[[
     Quick search by just selecting a string:
     'cmd-alt-s' search the string in google, pytorch doc, python doc
 ]]
+
+
+require "core.chrome";
+require "core.utils";
 
 
 function search_in_pydoc(content)

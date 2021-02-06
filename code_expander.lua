@@ -1,9 +1,9 @@
-require "core.expander";
-
 --[[
     Shortcurts to quickly write typical code by searching for commong snippets
     "cmd-alt-z" to pop up a search menu with the common code snippets
 ]]
+
+require "core.expander";
 
 
 function write_torch_imports()

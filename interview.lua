@@ -1,11 +1,11 @@
-require "core.utils"
-
 --[[
     Quick shortcuts to enable only when interviewing a candidate:
     
     'cmd-alt-i' to enter and exit the interview mode
     'cmd-alt-x' print the current time (useful to log)
 ]]
+
+require "core.utils"
 
 
 k = hs.hotkey.modal.new('cmd-alt', 'i')
