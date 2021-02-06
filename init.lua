@@ -11,13 +11,9 @@ hs.hotkey.bind({"cmd", 'alt'}, 'r', function()
 end)
 
 
--- Loading core utilities
-
-require "core.chrome"
-
-
 -- Loading all modules defining shortcuts
 
+require "app_tab_launcher";
 require "code_expander";
 require "interview";
 require "search";
@@ -32,10 +28,15 @@ local log = hs.logger.new('mymodule','debug')
 
 
 -- ****************************************************
--- Searching the right tab
--- ****************************************************
 
 
-hs.hotkey.bind({"cmd", "alt"}, "x", function()
-    chrome_switch_to_tab("Gmail", "gmail.com")
-end)
+-- TODO: play with HTTP requests
+-- https://www.hammerspoon.org/docs/hs.http.html
+
+
+-- TODO: answer to URL events
+-- https://www.hammerspoon.org/docs/hs.urlevent.html
+
+
+-- TODO: run tasks
+-- https://www.hammerspoon.org/docs/hs.task.html
