@@ -29,13 +29,6 @@ import torchvision.transforms as transforms]]
 end
 
 
-function write_plot_imports()
-    text = [[import matplotlib.pyplot as plt
-from IPython.display import HTML, Image, Video]]
-    write_lines(text)
-end
-
-
 function write_training_loop()
     text = [[
     ds = data.TensorDataset(X, Y)
@@ -227,7 +220,7 @@ function text_expander()
         {text="notebook", subText="notebook preambule", fct=write_notebook_preambule},
         {text="pipeline", subText="torchvision pipeline", fct=write_torchvision_pipeline},
         {text="pil", subText="creation of a pil image", fct=write_pil_code},
-        {text="plot", subText="plot imports", fct=write_plot_imports},
+        {text="plot", subText="plot imports", content=[[import matplotlib.pyplot as plt]]},
         {text="section", subText="section in python", fct=write_section_comment},
         {text="script", subText="script preambule", fct=write_script_preambule},
         {text="timer", subText="timing the speed of function", fct=write_timer_code},

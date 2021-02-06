@@ -25,7 +25,11 @@ end
 function Expander:apply_rule(input)
     for i, o in ipairs(self.options) do
         if o.text == input then
-            o.fct()
+            if o.fct ~= nil then
+                o.fct()
+            else
+                write_lines(o.content)
+            end
         end
     end
 end
