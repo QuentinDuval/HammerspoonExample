@@ -1,9 +1,9 @@
 require "core.expander";
 
-
--- **************************************
--- Specific expander for editing code
--- **************************************
+--[[
+    Shortcurts to quickly write typical code by searching for commong snippets
+    "cmd-alt-z" to pop up a search menu with the common code snippets
+]]
 
 
 function write_torch_imports()
@@ -240,3 +240,8 @@ function text_expander()
     }}
     expander:show()
 end
+
+
+hs.hotkey.bind({"cmd", "alt"}, "z", function()
+    text_expander()
+end)

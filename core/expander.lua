@@ -1,14 +1,9 @@
-
--- *****************************
--- Kind of text expander
--- *****************************
+--[[
+    Generic object which allows to search for content and run
+    the associated function.
+]]
 
 require "core.utils";
-
-
--- *****************************
--- Expander object
--- *****************************
 
 
 Expander = { options={} }
@@ -34,6 +29,7 @@ function Expander:apply_rule(input)
         end
     end
 end
+
 
 function Expander:show()
     local focused = hs.window.focusedWindow()

@@ -1,13 +1,8 @@
--- *****************************
--- Kind of pop up menu
--- *****************************
+--[[
+    Wrapper to quickly create pop-up menus
+]]
 
 require "core.utils";
-
-
--- *****************************
--- Pop-up menu object
--- *****************************
 
 
 PopUpMenu = { menu_items={} }

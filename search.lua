@@ -1,33 +1,25 @@
+require "core.chrome";
 require "core.utils";
 
 
--- *****************************
--- Search in the browser
--- *****************************
-
-
-function new_google_tab_with(address)
-    local browser = hs.application.open("Google Chrome", 0.1, true)
-    browser:activate()
-    hs.eventtap.keyStroke({"cmd"}, "t") -- open a new tab
-    hs.eventtap.keyStrokes(address) -- search in google
-    hs.eventtap.keyStroke({}, "return") -- validate auto completion
-    hs.eventtap.keyStroke({}, "return") -- run the search
-end
+--[[
+    Quick search by just selecting a string:
+    'cmd-alt-s' search the string in google, pytorch doc, python doc
+]]
 
 
 function search_in_pydoc(content)
-    new_google_tab_with("https://docs.python.org/3/search.html?q=" .. content)
+    new_chrome_tab_with("https://docs.python.org/3/search.html?q=" .. content)
 end
 
 
 function search_in_pytorch(content)
-    new_google_tab_with("https://pytorch.org/docs/stable/search.html?q=" .. content)
+    new_chrome_tab_with("https://pytorch.org/docs/stable/search.html?q=" .. content)
 end
 
 
 function search_in_google(content)
-    new_google_tab_with("http://www.google.fr/search?q=" .. content) -- search in google
+    new_chrome_tab_with("http://www.google.fr/search?q=" .. content) -- search in google
 end
 
 
@@ -38,3 +30,44 @@ function omni_search(content)
         search_in_google(content)
     end
 end
+
+
+function on_omni_search()
+    local content = copy_selected_text()
+    omni_search(content)
+end
+
+
+function on_google_search()
+    local content = copy_selected_text()
+    search_in_google(content)
+end
+
+
+function on_pytorch_search()
+    local content = copy_selected_text()
+    search_in_pytorch(content)
+end
+
+
+function on_python_search()
+    local content = copy_selected_text()
+    search_in_pydoc(content)
+end
+
+
+function pop_up_search_menu()
+    local pop_up = PopUpMenu:new{menu_items={
+        { title = "search", fn = on_omni_search },
+        { title = "-" },
+        { title = "search google", fn = on_google_search },
+        { title = "search pytorch", fn = on_pytorch_search },
+        { title = "search python", fn = on_python_search },
+    }}
+    pop_up:show()
+end
+
+
+hs.hotkey.bind({"cmd", "alt"}, "s", function()
+    pop_up_search_menu()
+end)
