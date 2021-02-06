@@ -5,6 +5,7 @@ require "core.utils";
 require "code_expander";
 require "core.pop_up_menu";
 require "search";
+require "interview";
 
 
 -- ****************************************************
