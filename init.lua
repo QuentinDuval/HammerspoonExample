@@ -31,6 +31,10 @@ local log = hs.logger.new('mymodule','debug')
 -- ****************************************************
 
 
+-- TODO: interesting to track time
+-- https://www.hammerspoon.org/docs/hs.application.watcher.html
+
+
 -- TODO: play with HTTP requests
 -- https://www.hammerspoon.org/docs/hs.http.html
 

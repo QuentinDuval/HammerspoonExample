@@ -34,6 +34,17 @@ function pycharm_open_new_ssh_terminal()
 end
 
 
+function pycharm_interpreter()
+    local ap = hs.application.find("PyCharm")
+    local success = ap:selectMenuItem("Preferences...")
+    if (success) then
+        hs.timer.doAfter(0.5, function()
+            hs.eventtap.keyStrokes("Interpreter")
+        end)
+    end
+end
+
+
 function pycharm_upload_diff()
     -- TODO
     -- might be a good use case for:

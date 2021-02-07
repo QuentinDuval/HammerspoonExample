@@ -22,6 +22,13 @@ function show_pycharm_actions()
                 pycharm_open_new_ssh_terminal()
             end
         },
+        {
+            text="Interpreter",
+            subText="Configure interpreter",
+            fct=function()
+                pycharm_interpreter()
+            end
+        }
     }}
     expander:show()
 end
