@@ -2,6 +2,8 @@
     Utilities to interact with PyCharm
 ]]
 
+require "core.menu_search";
+
 
 local log = hs.logger.new('core.pycharm','debug')
 
@@ -22,7 +24,11 @@ function switch_to_pycharm_window(pattern)
 end
 
 
-function open_new_ssh_terminal()
-    -- TODO
+function pycharm_open_new_ssh_terminal()
+    local ap = hs.application.find("PyCharm")
+    ap:selectMenuItem({"Tools", "Start SSH Session"})
+    -- TODO: select the right connection
+    hs.eventtap.keyStroke({}, "down")
+    hs.eventtap.keyStroke({}, "down")
+    hs.eventtap.keyStroke({}, "return")
 end
-

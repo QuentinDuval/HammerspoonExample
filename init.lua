@@ -15,6 +15,7 @@ end)
 
 require "app_tab_launcher";
 require "code_expander";
+require "contextual_actions";
 require "interview";
 require "search";
 
