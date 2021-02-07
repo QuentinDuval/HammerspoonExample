@@ -5,6 +5,13 @@
 
 require "core.chrome";
 require "core.expander";
+require "core.pycharm";
+
+
+local log = hs.logger.new('app_launcher','debug')
+
+
+-- TODO: add all existing tabs inside it
 
 
 function search_ap_or_tab()
@@ -31,6 +38,12 @@ function search_ap_or_tab()
             end
         },
     }}
+    local pycharm_windows = get_pycharm_windows()
+    hs.fnutils.each(pycharm_windows, function(window_name)
+        expander:add_choice(window_name, window_name, function()
+            switch_to_pycharm_window(window_name)
+        end)
+    end)
     expander:show()
 end
 
