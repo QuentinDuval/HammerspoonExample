@@ -32,3 +32,10 @@ function pycharm_open_new_ssh_terminal()
     hs.eventtap.keyStroke({}, "down")
     hs.eventtap.keyStroke({}, "return")
 end
+
+
+function pycharm_upload_diff()
+    -- TODO
+    -- might be a good use case for:
+    -- https://www.hammerspoon.org/docs/hs.pathwatcher.html
+end
