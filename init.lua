@@ -29,6 +29,14 @@ local log = hs.logger.new('mymodule','debug')
 
 
 -- ****************************************************
+-- All windows appear as tabs in the title (enable by ap)
+-- ****************************************************
+
+
+hs.tabs.enableForApp("PyCharm")
+
+
+-- ****************************************************
 
 
 -- TODO: interesting to track time
