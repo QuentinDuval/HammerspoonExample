@@ -12,9 +12,20 @@ local log = hs.logger.new('core.pycharm','debug')
 hs.tabs.enableForApp("PyCharm")
 
 
+-- Define a window filter that watches the PyCharm windows
+-- (because hs.application:allWindows() only return windows in the current space)
+-- Note that it does not work perfectly either: the filter usually retains only the last one
+local pycharm_wf = hs.window.filter.new{"PyCharm"}
+pycharm_wf:setAppFilter("PyCharm", {})
+pycharm_wf:setCurrentSpace(nil)  -- allow all spaces to be watched
+-- local default_wf = hs.window.filter.default
+-- default_wf:setCurrentSpace(nil)
+
+
 function get_pycharm_windows()
-    local ap = hs.application.find("PyCharm")
-    local windows = ap:allWindows()
+    -- local ap = hs.application.find("PyCharm")
+    -- local windows = ap:allWindows()
+    local windows = pycharm_wf:getWindows(hs.window.filter.sortByFocused)
     return hs.fnutils.map(windows, function(window)
         return window:title()
     end)
@@ -22,8 +33,12 @@ end
 
 
 function switch_to_pycharm_window(pattern)
-    local ap = hs.application.find("PyCharm")
-    local window = ap:findWindow(pattern)
+    -- local ap = hs.application.find("PyCharm")
+    -- local window = ap:findWindow(pattern)
+    local windows = pycharm_wf:getWindows(hs.window.filter.sortByFocused)
+    local window = hs.fnutils.find(windows, function(window)
+        return window:title() == pattern
+    end)
     window:focus()
 end
 
