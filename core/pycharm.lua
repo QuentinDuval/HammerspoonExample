@@ -8,6 +8,10 @@ require "core.menu_search";
 local log = hs.logger.new('core.pycharm','debug')
 
 
+-- Show tabs with all windows in the PyCharm title bar
+hs.tabs.enableForApp("PyCharm")
+
+
 function get_pycharm_windows()
     local ap = hs.application.find("PyCharm")
     local windows = ap:allWindows()
