@@ -11,7 +11,7 @@ require "core.utils";
 CopyWatcher = {
     watcher = nil,
     enabled = true,
-    previous_pastes={},
+    previous_pastes = {},
 }
 
 
@@ -62,7 +62,6 @@ function CopyWatcher:search()
         end
     )
     local expander = Expander:new{options=options}
-    -- expander:show(function() self.enabled = true end)
     expander:show()
 end
 

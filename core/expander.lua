@@ -43,8 +43,26 @@ function Expander:show(on_hide)
     local focused = hs.window.focusedWindow()
     local all_choices = {}
     for i, e in ipairs(self.options) do
-        table.insert(all_choices, {text=e.text, subText=e.subText})
+        table.insert(all_choices, {
+            image=hs.image.imageFromName("NSBonjour"),
+            -- image=hs.image.imageFromName("NSTouchBarAddDetailTemplate"),
+            -- image=hs.image.imageFromName("NSTouchBarPlayTemplate"),
+            -- image=hs.image.imageFromName("NSTouchBarGoForwardTemplate"),
+            -- image=hs.image.imageFromName("NSTouchBarSlideshowTemplate"),
+            text=e.text,
+            subText=e.subText,
+        })
     end
+
+    --[[
+    for i, name in pairs(hs.image.systemImageNames) do
+        table.insert(all_choices, {
+            image=hs.image.imageFromName(name),
+            text=name,
+        })
+    end
+    ]]
+
     table.sort(all_choices, function(l, r) return l.text < r.text end)
 
     local chooser = hs.chooser.new(function(choice)
