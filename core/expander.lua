@@ -8,6 +8,7 @@ require "core.utils";
 
 Expander = { options={} }
 
+
 function Expander:new(e)
     e = e or {}
     setmetatable(e, self)
@@ -15,12 +16,14 @@ function Expander:new(e)
     return e
 end
 
+
 function Expander:add_choice(text, subText, fct)
     table.insert(self.options, {
         text=text,
         subText=subText,
         fct=fct})
 end
+
 
 function Expander:apply_rule(input)
     local rule = hs.fnutils.find(self.options, function(o)
@@ -36,7 +39,7 @@ function Expander:apply_rule(input)
 end
 
 
-function Expander:show()
+function Expander:show(on_hide)
     local focused = hs.window.focusedWindow()
     local all_choices = {}
     for i, e in ipairs(self.options) do
@@ -67,6 +70,10 @@ function Expander:show()
         )
         chooser:choices(choices)
     end)
+
+    if on_hide ~= nil then
+        chooser:hideCallback(on_hide)
+    end
 
     -- hs.focus()
     hs.dockicon.hide() -- important so that it appears in front in any space

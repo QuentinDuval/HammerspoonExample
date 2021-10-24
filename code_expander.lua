@@ -212,7 +212,7 @@ end
 
 
 function text_expander()
-    expander = Expander:new{ options={
+    local expander = Expander:new{ options={
         {text="args", subText="argument parsing", fct=write_argument_parsing},
         {text="launch.json", subText="launch JSON configuration", fct=write_launch_json},
         {text="memory of", subText="get memory size of python object", fct=write_get_memory},
