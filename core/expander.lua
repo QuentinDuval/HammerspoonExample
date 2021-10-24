@@ -38,11 +38,11 @@ end
 
 function Expander:show()
     local focused = hs.window.focusedWindow()
-    local choices = {}
+    local all_choices = {}
     for i, e in ipairs(self.options) do
-        table.insert(choices, {text=e.text, subText=e.subText})
+        table.insert(all_choices, {text=e.text, subText=e.subText})
     end
-    table.sort(choices, function(l, r) return l.text < r.text end)
+    table.sort(all_choices, function(l, r) return l.text < r.text end)
 
     local chooser = hs.chooser.new(function(choice)
         focused:focus();
@@ -50,10 +50,28 @@ function Expander:show()
         self:apply_rule(choice.text)
     end)
 
+    -- Searching for all query parts where query
+    -- parts are separated with the '+' sign
+    chooser:queryChangedCallback(function(query)
+        local query_parts = hs.fnutils.split(query, "+")
+        local choices = hs.fnutils.ifilter(
+            all_choices,
+            function(choice)
+                return hs.fnutils.every(
+                    query_parts,
+                    function(query_part)
+                        return string.match(choice.text, query_part)
+                    end
+                )
+            end
+        )
+        chooser:choices(choices)
+    end)
+
     -- hs.focus()
     hs.dockicon.hide() -- important so that it appears in front in any space
     -- chooser:searchSubText(true)
-    chooser:choices(choices)
+    chooser:choices(all_choices)
     chooser:rows(5)
     chooser:bgDark(true)
     chooser:show()
