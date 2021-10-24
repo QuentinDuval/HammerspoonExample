@@ -5,6 +5,7 @@
 
 
 require "core.chrome";
+require "core.pop_up_menu";
 require "core.utils";
 
 
@@ -18,8 +19,18 @@ function search_in_pytorch(content)
 end
 
 
+function search_in_torchvision(content)
+    new_chrome_tab_with("https://pytorch.org/vision/stable/search.html?q=" .. content)
+end
+
+
 function search_in_google(content)
     new_chrome_tab_with("http://www.google.fr/search?q=" .. content) -- search in google
+end
+
+
+function search_paper_with_code(content)
+    new_chrome_tab_with("https://paperswithcode.com/search?q_meta=&q_type=&q=" .. content)
 end
 
 
@@ -32,37 +43,24 @@ function omni_search(content)
 end
 
 
-function on_omni_search()
-    local content = copy_selected_text()
-    omni_search(content)
-end
-
-
-function on_google_search()
-    local content = copy_selected_text()
-    search_in_google(content)
-end
-
-
-function on_pytorch_search()
-    local content = copy_selected_text()
-    search_in_pytorch(content)
-end
-
-
-function on_python_search()
-    local content = copy_selected_text()
-    search_in_pydoc(content)
+function on_selected_text(fn)
+    return function()
+        local content = copy_selected_text()
+        fn(content)
+    end
 end
 
 
 function pop_up_search_menu()
     local pop_up = PopUpMenu:new{menu_items={
-        { title = "search", fn = on_omni_search },
+        { title = "search", fn = on_selected_text(omni_search) },
         { title = "-" },
-        { title = "search google", fn = on_google_search },
-        { title = "search pytorch", fn = on_pytorch_search },
-        { title = "search python", fn = on_python_search },
+        { title = "google", fn = on_selected_text(search_in_google) },
+        { title = "python", fn = on_selected_text(search_in_pydoc) },
+        { title = "pytorch", fn = on_selected_text(search_in_pytorch) },
+        { title = "torchvision", fn = on_selected_text(search_in_torchvision) },
+        { title = "-" },
+        { title = "paper with code", fn = on_selected_text(search_paper_with_code) },
     }}
     pop_up:show()
 end
