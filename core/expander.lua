@@ -6,7 +6,10 @@
 require "core.utils";
 
 
-Expander = { options={} }
+Expander = {
+    options={},
+    with_sorting=false,
+}
 
 
 function Expander:new(e)
@@ -21,7 +24,8 @@ function Expander:add_choice(text, subText, fct)
     table.insert(self.options, {
         text=text,
         subText=subText,
-        fct=fct})
+        fct=fct,
+    })
 end
 
 
@@ -63,7 +67,9 @@ function Expander:show(on_hide)
     end
     ]]
 
-    table.sort(all_choices, function(l, r) return l.text < r.text end)
+    if self.with_sorting then
+        table.sort(all_choices, function(l, r) return l.text < r.text end)
+    end
 
     local chooser = hs.chooser.new(function(choice)
         focused:focus();

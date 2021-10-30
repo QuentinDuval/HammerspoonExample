@@ -61,7 +61,11 @@ function CopyWatcher:search()
             }
         end
     )
-    local expander = Expander:new{options=options}
+    reverse(options)
+    local expander = Expander:new{
+        options=options,
+        with_sorting=false,
+    }
     expander:show()
 end
 
