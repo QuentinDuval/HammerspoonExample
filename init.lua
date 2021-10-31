@@ -19,6 +19,7 @@ require "contextual_actions";
 require "copy_searcher";
 require "interview";
 require "search";
+require "test";
 
 
 -- ****************************************************
