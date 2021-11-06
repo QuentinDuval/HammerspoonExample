@@ -11,23 +11,19 @@ hs.hotkey.bind({"cmd", 'alt'}, 'r', function()
 end)
 
 
+local log = hs.logger.new('mymodule','debug')
+
+
 -- Loading all modules defining shortcuts
 
 require "app_tab_launcher";
 require "code_expander";
 require "contextual_actions";
-require "copy_searcher";
 require "interview";
 require "search";
 require "test";
 
-
--- ****************************************************
--- Logging
--- ****************************************************
-
-
-local log = hs.logger.new('mymodule','debug')
+hs.loadSpoon("Spoons/CopyWatcher"):max_size(20):start():bindTo({"cmd", "alt"}, "e")
 
 
 -- ****************************************************
