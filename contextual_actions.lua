@@ -13,8 +13,8 @@ local log = hs.logger.new('contextual','debug')
 -- TODO: add all existing tabs inside it
 
 
-function show_pycharm_actions()
-    expander = Expander:new{ options={
+function get_pycharm_actions()
+    return {
         {
             text="Open SSH session",
             subText="Open SSH session",
@@ -29,17 +29,33 @@ function show_pycharm_actions()
                 pycharm_interpreter()
             end
         }
-    }}
-    expander:show()
+    }
+end
+
+
+function get_vscode_actions()
+    return {
+        {
+            text="Example actions",
+            fct=function() hs.alert("example") end
+        }
+    }
 end
 
 
 function show_contextual_actions()
     local ap = hs.application.frontmostApplication()
     local ap_name = ap:name()
+
+    local actions = {}
     if string.find(ap_name, "PyCharm") then
-        show_pycharm_actions()
+        actions = hs.fnutils.concat(actions, get_pycharm_actions())
+    elseif string.find(ap_name, "Code") then
+        actions = hs.fnutils.concat(actions, get_vscode_actions())
     end    
+
+    expander = Expander:new{ options=actions }
+    expander:show()
 end
 
 
