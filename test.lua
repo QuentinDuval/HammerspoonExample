@@ -32,3 +32,40 @@ hs.hotkey.bind({"cmd", "alt"}, "y", function()
         end
     end)
 end)
+
+
+hs.hotkey.bind({"cmd", "alt"}, "u", function()
+    
+    -- Example on how to visualise a brower window,
+    -- find an element in the DOM and them enter text
+    -- and do the research
+
+    local rect = hs.geometry.rect(0, 0, 500, 400)
+    local popup_style = hs.webview.windowMasks.utility|hs.webview.windowMasks.HUD|hs.webview.windowMasks.titled|hs.webview.windowMasks.closable
+
+    webview = hs.webview.new(rect)
+        :allowTextEntry(true)
+        :windowStyle(popup_style)
+        :closeOnEscape(true)
+
+    webview:url("http://www.google.com")
+      :bringToFront()
+      :show()
+    
+    hs.timer.doAfter(1, function()
+        webview:evaluateJavaScript([[
+            for (let element of document.getElementsByName("q")) {
+                element.value = "example query";
+            }
+            /*
+            // There is not button in the case of google search, it is a form
+            const buttons = document.getElement("btnI");
+            for (let button of buttons) {
+                alert(button);
+                button.submit();
+            }
+            */
+            document.querySelector("form").submit();
+        ]])
+    end)
+end)
