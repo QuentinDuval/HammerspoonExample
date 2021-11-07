@@ -70,8 +70,17 @@ hs.hotkey.bind({"cmd", "alt"}, "u", function()
         -- Show that we can get the second screen after as well
         hs.timer.doAfter(2, function()
             webview:evaluateJavaScript([[
-                alert(document.title);
-            ]])
+                // alert(document.title);
+                console.log(document.title);
+                // Last statement will be the return type
+                document.title;
+            ]], function(result, error)
+                hs.alert.show(result)
+                hs.alert.show(hs.inspect(error))
+            end)
+            hs.timer.doAfter(2, function()
+                webview:delete()
+            end)
         end)
     end)
 end)
