@@ -81,6 +81,7 @@ hs.hotkey.bind({"cmd", "alt"}, "u", function()
             ]], function(result, error)
                 hs.alert.show(hs.inspect(result))
                 -- hs.alert.show(hs.inspect(error))
+                webview:delete()
             end)
             --[[
             hs.timer.doAfter(2, function()
