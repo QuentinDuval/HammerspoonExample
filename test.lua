@@ -59,7 +59,7 @@ hs.hotkey.bind({"cmd", "alt"}, "u", function()
             }
             /*
             // There is not button in the case of google search, it is a form
-            const buttons = document.getElement("btnI");
+            const buttons = document.getElementsByName("btnI");
             for (let button of buttons) {
                 alert(button);
                 button.submit();
@@ -67,5 +67,11 @@ hs.hotkey.bind({"cmd", "alt"}, "u", function()
             */
             document.querySelector("form").submit();
         ]])
+        -- Show that we can get the second screen after as well
+        hs.timer.doAfter(2, function()
+            webview:evaluateJavaScript([[
+                alert(document.title);
+            ]])
+        end)
     end)
 end)
