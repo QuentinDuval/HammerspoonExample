@@ -4,33 +4,20 @@
 ]]
 
 
-function open_connection()
-    return hs.sqlite3.open('db/foo.db')
-end
-
-
-function with_connection(f)
-    local db = open_connection()
-    f(db)
-    db:close()
-end
+require "core.global_states";
 
 
 hs.hotkey.bind({"cmd", "alt"}, "y", function()
-    with_connection(function (db)
-        local result = db:execute([[
-            CREATE TABLE numbers(num1,num2);
-            INSERT INTO numbers VALUES(1,11);
-            INSERT INTO numbers VALUES(2,22);
-            INSERT INTO numbers VALUES(3,33);
-        ]]);
-        -- hs.alert(result);  -- 0 if successful, 1 if not
+    with_globals_db_connection(function(db)
+        create_tables(db)
     end)
-    with_connection(function (db)
-        for a in db:nrows('SELECT * FROM numbers') do
-            hs.alert(hs.inspect(a))
-        end
-    end)
+    add_global("first_name", "quentin")
+    add_global("last_name", "duval")
+    -- list_globals()
+    set_global("first_name", "quentin")
+    hs.alert.show(get_global("first_name"))
+    set_global("first_name", "Quentin")
+    hs.alert.show(get_global("first_name"))
 end)
 
 
