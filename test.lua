@@ -8,16 +8,12 @@ require "core.global_states";
 
 
 hs.hotkey.bind({"cmd", "alt"}, "y", function()
-    with_globals_db_connection(function(db)
-        create_tables(db)
-    end)
-    add_global("first_name", "quentin")
-    add_global("last_name", "duval")
-    -- list_globals()
-    set_global("first_name", "quentin")
-    hs.alert.show(get_global("first_name"))
-    set_global("first_name", "Quentin")
-    hs.alert.show(get_global("first_name"))
+    local first_name = PersitentGlobal:new("first_name", "quentin")
+    local last_name = PersitentGlobal:new("last_name", "duval")
+    hs.alert.show(first_name:get())
+    first_name:set("Quentin")
+    hs.alert.show(first_name:get())
+    PersitentGlobal.list()
 end)
 
 

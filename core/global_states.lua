@@ -3,6 +3,38 @@
 ]]
 
 
+PersitentGlobal = {}
+
+
+function PersitentGlobal:new(name, default_value)
+    m = { name = name }
+    setmetatable(m, self)
+    self.__index = self
+    with_globals_db_connection(create_tables);
+    add_global(name, default_value)
+    return m
+end
+
+
+function PersitentGlobal:set(value)
+    set_global(self.name, value)
+end
+
+
+function PersitentGlobal:get()
+    return get_global(self.name)
+end
+
+
+function PersitentGlobal.list()
+    with_globals_db_connection(function(db)
+        for row in db:nrows("select * from globals") do
+            hs.alert.show(hs.inspect(row))
+        end
+    end)
+end
+
+
 function globals_db_connection()
     return hs.sqlite3.open('db/globals.db')
 end
@@ -17,10 +49,7 @@ end
 
 
 function create_tables(db)
-    -- db:nrows('SELECT * FROM globals')
-    local result = db:execute([[
-        CREATE TABLE globals(name,value);
-    ]]);
+    local result = db:execute([[CREATE TABLE globals(name,value);]]);
 end
 
 
@@ -58,14 +87,5 @@ function get_global(name)
             return row["value"]
         end
         return nil
-    end)
-end
-
-
-function list_globals()
-    with_globals_db_connection(function(db)
-        for row in db:nrows("select * from globals") do
-            hs.alert.show(hs.inspect(row))
-        end
     end)
 end
