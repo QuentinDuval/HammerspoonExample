@@ -17,6 +17,15 @@ hs.hotkey.bind({"cmd", "alt"}, "y", function()
 end)
 
 
+hs.hotkey.bind({"cmd", "alt"}, "p", function()
+    hs.http.asyncGet("http://0.0.0.0:5000/stream", nil, function(code, body, headers)
+        -- This will wait for the complete answer, no support for streaming
+        hs.alert.show(code)
+        hs.alert.show(hs.inspect(body))
+    end)
+end)
+
+
 hs.hotkey.bind({"cmd", "alt"}, "u", function()
     
     -- Example on how to visualise a brower window,
