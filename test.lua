@@ -5,6 +5,7 @@
 
 
 require "core.global_states";
+require "core.form";
 
 
 hs.hotkey.bind({"cmd", "alt"}, "y", function()
@@ -86,33 +87,5 @@ end)
 
 
 hs.hotkey.bind({"cmd", "alt"}, "m", function()
-    -- arguments to provide to the function
-    local label = "Enter input:"
-    local default = ""
-    local callback = function(name, input, view)
-        print(name)
-        print(input)
-        view:delete()
-    end
-
-    -- Register a callback with a name
-    local uccName = "prompter" .. hs.host.uuid():gsub("-","")    
-    local ucc = hs.webview.usercontent.new(uccName):setCallback(function(input)
-        -- print(hs.inspect(input))
-        callback(input.name, input.body, input.webView)
-    end)
-
-    -- Code for the page to show
-    local view = hs.webview.new(frame, { developerExtrasEnabled = true }, ucc):html([[
-        <script type="text/javascript">
-        var textMsg = window.prompt("]]..label..[[", "]]..default..[[") ;
-        try {
-            webkit.messageHandlers.]]..uccName..[[.postMessage(textMsg) ;
-        } catch(err) {
-            console.log('Controller ]]..uccName..[[ does not exist');
-            console.log(err)
-        }
-        </script>
-    ]]):show()
-
+    pop_web_form({}, function() end)
 end)
