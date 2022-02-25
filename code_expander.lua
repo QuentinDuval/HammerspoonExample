@@ -230,6 +230,8 @@ function text_expander()
         {text="to_image", subText="tensor to PIL image", fct=write_to_pil_image},
         {text="torchvision", subText="torchvision imports", fct=write_torchvision_imports},
         {text="warnings", subText="ignore warnings", fct=write_ignore_warning},
+        {text="quotes", subText="code quotes", content=[[```
+```]]},
     }}
     expander:show()
 end
