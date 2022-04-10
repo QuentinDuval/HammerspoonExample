@@ -1,6 +1,7 @@
 -- *****************************
 -- String helpers
 -- *****************************
+
 function string.is_empty(s)
     return s == nil or s == ''
 end
@@ -13,6 +14,18 @@ function string.split(inputstr, sep)
     end
     return t
 end
+
+-- *****************************
+-- File helpers
+-- *****************************
+
+function io.read_file(file_path)
+    local file = io.open(file_path, 'r')
+    local content = file:read('*a')
+    file:close()
+    return content
+end
+
 
 -- *****************************
 -- List helpers
