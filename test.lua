@@ -87,5 +87,5 @@ end)
 
 
 hs.hotkey.bind({"cmd", "alt"}, "m", function()
-    pop_web_form({}, function() end)
+    pop_web_example()
 end)
