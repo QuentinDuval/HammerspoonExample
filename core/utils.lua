@@ -28,6 +28,20 @@ function io.read_file(file_path)
 end
 
 
+function io.iter_lines(file_path)
+    --[[
+    local file = io.open(file_path, 'r')
+    local line = file:read()
+    return function()
+        local prev_line = line
+        line = file:read()
+        return prev_line
+    end
+    ]]
+    return io.lines(file_path)
+end
+
+
 -- *****************************
 -- List helpers
 -- *****************************
