@@ -68,6 +68,23 @@ function table.filter(t, pred)
 end
 
 
+function table.zip(x, y)
+    local m = #x
+    local n = #y
+    local i = 1
+    return function()
+        if (i > n or i > m) then
+            return nil
+        else
+            local v1 = x[i]
+            local v2 = y[i]
+            i = i + 1
+            return v1, v2
+        end
+    end
+end
+
+
 -- *****************************
 -- Copy paste helpers
 -- *****************************

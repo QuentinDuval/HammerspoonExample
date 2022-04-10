@@ -76,7 +76,7 @@ function obj:search()
             }
         end
     )
-    reverse(options)
+    table.reverse(options)
     local expander = Expander:new{
         options=options,
         with_sorting=false,
