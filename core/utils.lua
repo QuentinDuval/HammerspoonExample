@@ -1,33 +1,36 @@
 -- *****************************
 -- String helpers
 -- *****************************
-
-
-function is_empty(s)
+function string.is_empty(s)
     return s == nil or s == ''
 end
 
+function string.split(inputstr, sep)
+    sep = sep or "%s"
+    local t = {}
+    for str in string.gmatch(inputstr, "([^" .. sep .. "]+)") do
+        table.insert(t, str)
+    end
+    return t
+end
 
 -- *****************************
 -- List helpers
 -- *****************************
 
-
 function reverse(t)
     local n = #t
     local i = 1
     while i < n do
-      t[i],t[n] = t[n],t[i]
-      i = i + 1
-      n = n - 1
+        t[i], t[n] = t[n], t[i]
+        i = i + 1
+        n = n - 1
     end
 end
-
 
 -- *****************************
 -- Copy paste helpers
 -- *****************************
-
 
 function copy()
     hs.eventtap.keyStroke({"cmd"}, "c")
@@ -61,17 +64,14 @@ function get_window_name()
     end
 end
 
-
 -- *****************************
 -- Write text helpers
 -- *****************************
-
 
 function enter_in_command_line(text)
     hs.eventtap.keyStrokes(text)
     hs.eventtap.keyStroke({}, "return")
 end
-
 
 function doKeyStroke(modifiers, character)
     -- In case hs.eventtap.keyStroke does not work
@@ -91,7 +91,6 @@ function doKeyStroke(modifiers, character)
     end
 end
 
-
 function write_lines(text_with_lines)
     with_temporary_copy(function()
         hs.pasteboard.writeObjects(text_with_lines)
@@ -99,24 +98,20 @@ function write_lines(text_with_lines)
     end)
 end
 
-
 -- *****************************
 -- Windows helpers
 -- *****************************
-
 
 function focused_window_name_contains(text)
     local window_name = get_window_name()
     return window_name:find(text) and window_name:find(text) > 0
 end
 
-
 -- *****************************
 -- Example to run apple script
 -- *****************************
 
-
 function run_apple_script()
-    ok,result = hs.applescript('tell Application "Chrome" to open location "http://www.google.fr"')
+    ok, result = hs.applescript('tell Application "Chrome" to open location "http://www.google.fr"')
     hs.alert.show(result)
 end
