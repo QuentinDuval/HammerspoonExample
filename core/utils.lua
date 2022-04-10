@@ -31,7 +31,7 @@ end
 -- List helpers
 -- *****************************
 
-function reverse(t)
+function table.reverse(t)
     local n = #t
     local i = 1
     while i < n do
@@ -40,6 +40,33 @@ function reverse(t)
         n = n - 1
     end
 end
+
+function table.enumerate(t)
+    return ipairs(t)
+end
+
+function table.length(t)
+    return #t
+end
+
+function table.transform(t, fct)
+    local output = {}
+    for i, v in ipairs(t) do
+        table.insert(output, fct(v))
+    end
+    return output
+end
+
+function table.filter(t, pred)
+    local output = {}
+    for i, v in ipairs(t) do
+        if pred(v) then
+            table.insert(output, v)
+        end
+    end
+    return output
+end
+
 
 -- *****************************
 -- Copy paste helpers
