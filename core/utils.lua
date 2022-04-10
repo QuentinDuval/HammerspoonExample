@@ -21,6 +21,7 @@ end
 
 function io.read_file(file_path)
     local file = io.open(file_path, 'r')
+    assert(file)
     local content = file:read('*a')
     file:close()
     return content

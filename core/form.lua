@@ -20,33 +20,9 @@ function pop_web_example()
     local popup_style = hs.webview.windowMasks.utility|hs.webview.windowMasks.HUD|hs.webview.windowMasks.titled|hs.webview.windowMasks.closable
     local view = hs.webview.new(frame, { developerExtrasEnabled = true }, ucc)
     view:allowTextEntry(true):windowStyle(popup_style):closeOnEscape(true)
-    view:html([[
-        <html>
-        <body>
-
-        <h1>The Window Object</h1>
-        <h2>The prompt() Method</h2>
-
-        <p>Click the button to demonstrate the prompt box.</p>
-
-        <button onclick="myFunction()">Try it</button>
-
-        <p id="demo"></p>
-
-        <script>
-        function myFunction() {
-            let person = prompt("Please enter your name", "Harry Potter");
-            if (person != null) {
-                document.getElementById("demo").innerHTML =
-                "Hello " + person + "! How are you today?";
-                webkit.messageHandlers.]]..uccName..[[.postMessage(person) ;
-            }
-        }
-        </script>
-
-        </body>
-        </html>
-    ]])
+    local html_content = io.read_file("core/rsrc/form.html")
+    html_content = string.gsub(html_content, "uccName", uccName)
+    view:html(html_content)
 
     view:bringToFront():show()
 end
