@@ -1,27 +1,31 @@
 <html>
-
 <body>
+    <h2>Enter fields:</h1>
 
-    <h1>The Window Object</h1>
-    <h2>The prompt() Method</h2>
+    <span>Input:</span>
+    <input id="input1" name="field" placeholder="Enter text here..."></input>
+    <p></p>
 
-    <p>Click the button to demonstrate the prompt box.</p>
+    <span>Input:</span>
+    <input id="input2" name="field" placeholder="Enter text here..."></input>
+    <p></p>
 
-    <button onclick="myFunction()">Try it</button>
+    <span>Input:</span>
+    <input id="input3" name="field" placeholder="Enter text here..."></input>
+    <p></p>
 
-    <p id="demo"></p>
+    <button onclick="onSubmitForm()">Submit</button>
 
     <script>
-        function myFunction() {
-            let person = prompt("Please enter your name", "Harry Potter");
-            if (person != null) {
-                document.getElementById("demo").innerHTML =
-                    "Hello " + person + "! How are you today?";
-                webkit.messageHandlers.uccName.postMessage(person);
+        function onSubmitForm() {
+            let values = [];
+            for (let field of document.getElementsByName("field")) {
+                values.push(field.value);
             }
+            webkit.messageHandlers.uccName.postMessage({
+                "values": values,
+            });
         }
     </script>
-
 </body>
-
 </html>
