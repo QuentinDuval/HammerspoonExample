@@ -34,11 +34,11 @@ function pop_web_example(options)
     -- Then instantiate as many fields as needed
     local fields = "";
     for i, label in ipairs(labels) do
-        fields = fields .. [[
-            <span>]] .. label .. [[</span>
-            <input name="field" placeholder="Enter text here..."></input>
+        fields = fields .. string.format([[
+            <span>%s</span>
+            <input class="field" name="%s" placeholder="Enter text here..."></input>
             <p></p>
-        ]]
+        ]], label, label)
     end
     local placeholder = "<span>PLACEHOLDER</span>"
     html_content = string.gsub(html_content, placeholder, fields)

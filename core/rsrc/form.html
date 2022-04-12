@@ -8,9 +8,9 @@
 
     <script>
         function onSubmitForm() {
-            let values = [];
-            for (let field of document.getElementsByName("field")) {
-                values.push(field.value);
+            let values = {};
+            for (let field of document.getElementsByClassName("field")) {
+                values[field.name] = field.value;
             }
             webkit.messageHandlers.uccName.postMessage({
                 "values": values,
