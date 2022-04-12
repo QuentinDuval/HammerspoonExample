@@ -87,10 +87,10 @@ end)
 
 
 hs.hotkey.bind({"cmd", "alt"}, "m", function()
-    pop_web_example(
-        {"Config 1", "Config 2", "Input 1", "Input 2", "Input 3"},
-        function(output)
+    pop_web_example{
+        labels={"Config 1", "Config 2", "Input 1", "Input 2", "Input 3"},
+        on_success=function(output)
             print(hs.inspect(output))
         end
-    )
+    }
 end)
