@@ -87,5 +87,5 @@ end)
 
 
 hs.hotkey.bind({"cmd", "alt"}, "m", function()
-    pop_web_example()
+    pop_web_example({"Config 1", "Config 2", "Input"})
 end)

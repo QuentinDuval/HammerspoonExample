@@ -1,7 +1,5 @@
-function pop_web_example()
-    -- arguments to provide to the function
-    local label = "Enter input:"
-    local default = ""
+function pop_web_example(labels)
+    -- TODO: Arguments to provide to the function
     local wrapped_callback = function(name, input, view)
         -- Print name of the handler
         print(name)
@@ -24,8 +22,24 @@ function pop_web_example()
     local popup_style = hs.webview.windowMasks.utility|hs.webview.windowMasks.HUD|hs.webview.windowMasks.titled|hs.webview.windowMasks.closable
     local view = hs.webview.new(frame, { developerExtrasEnabled = true }, ucc)
     view:allowTextEntry(true):windowStyle(popup_style):closeOnEscape(true)
+    
+    -- Load the HTML form and place the UCC handler in it
     local html_content = io.read_file("core/rsrc/form.html")
     html_content = string.gsub(html_content, "uccName", uccName)
+
+    -- Then instantiate as many fields as needed
+    local fields = "";
+    for i, label in ipairs(labels) do
+        fields = fields .. [[
+            <span>]] .. label .. [[</span>
+            <input name="field" placeholder="Enter text here..."></input>
+            <p></p>
+        ]]
+    end
+    local placeholder = "<span>PLACEHOLDER</span>"
+    html_content = string.gsub(html_content, placeholder, fields)
+
+    -- Now pop up the web page
     view:html(html_content)
     view:bringToFront():show()
 end
