@@ -7,7 +7,7 @@ function pop_web_example(options)
     local position = options.position or hs.mouse.getAbsolutePosition()
     local stay_open = options.stay_open or false
 
-    -- TODO: Arguments to provide to the function
+    -- Wrapper around the callback to automatically close
     local wrapped_callback = function(name, input, view)
         on_success(input)
         if not stay_open then
