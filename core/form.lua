@@ -16,9 +16,13 @@ function pop_web_example(labels)
         wrapped_callback(input.name, input.body, input.webView)
     end)
 
-    -- Code for the page to show
+    -- Get position and size of the pop up
     local position_point = hs.mouse.getAbsolutePosition()
-    local frame = hs.geometry.rect(position_point.x, position_point.y, 300, 200)
+    local width = 300
+    local height = 100 + 40 * #labels
+
+    -- Create the pop up
+    local frame = hs.geometry.rect(position_point.x, position_point.y, width, height)
     local popup_style = hs.webview.windowMasks.utility|hs.webview.windowMasks.HUD|hs.webview.windowMasks.titled|hs.webview.windowMasks.closable
     local view = hs.webview.new(frame, { developerExtrasEnabled = true }, ucc)
     view:allowTextEntry(true):windowStyle(popup_style):closeOnEscape(true)
