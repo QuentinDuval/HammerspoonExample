@@ -1,11 +1,7 @@
-function pop_web_example(labels)
+function pop_web_example(labels, on_success)
     -- TODO: Arguments to provide to the function
     local wrapped_callback = function(name, input, view)
-        -- Print name of the handler
-        print(name)
-        -- Print content of the answer
-        print(hs.inspect(input))
-        -- To close the view
+        on_success(input)
         view:delete()
     end
 
