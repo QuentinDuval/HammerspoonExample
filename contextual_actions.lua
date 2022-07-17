@@ -59,6 +59,6 @@ function show_contextual_actions()
 end
 
 
-hs.hotkey.bind({"cmd", "alt"}, "a", function()
+hs.hotkey.bind({"cmd", "alt"}, "q", function()
     show_contextual_actions()
 end)

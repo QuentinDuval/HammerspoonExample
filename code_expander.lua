@@ -237,6 +237,6 @@ function text_expander()
 end
 
 
-hs.hotkey.bind({"cmd", "alt"}, "z", function()
+hs.hotkey.bind({"cmd", "alt"}, "w", function()
     text_expander()
 end)
