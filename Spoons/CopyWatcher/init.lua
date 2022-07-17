@@ -5,6 +5,7 @@
 
 
 require "core.expander";
+require "core.utils";
 
 
 local obj = {}
@@ -12,11 +13,11 @@ obj.__index = obj
 
 
 -- Metadata
-obj.name = "Example Spoon"
+obj.name = "Copy Whatcher"
 obj.version = "0.1"
 obj.author = "Quentin Duval"
 obj.homepage = ""
-obj.license = "MIT - https://opensource.org/licenses/MIT"
+obj.license = ""
 
 
 -- State of the copy watcher
@@ -77,10 +78,8 @@ function obj:search()
         end
     )
     table.reverse(options)
-    local expander = Expander:new{
-        options=options,
-        with_sorting=false,
-    }
+    local expander = Expander:new{options=options}
+    expander:without_sort()
     expander:show()
 end
 

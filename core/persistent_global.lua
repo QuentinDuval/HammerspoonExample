@@ -28,7 +28,7 @@ end
 
 function PersitentGlobal.list()
     with_globals_db_connection(function(db)
-        for row in db:nrows("select * from globals") do
+        for row in db:nrows("select * from GLOBALS") do
             hs.alert.show(hs.inspect(row))
         end
     end)
@@ -49,13 +49,13 @@ end
 
 
 function create_tables(db)
-    local result = db:execute([[CREATE TABLE globals(name,value);]]);
+    local result = db:execute([[create table GLOBALS(name,value);]]);
 end
 
 
 function name_exists(db, name)
     local found = false
-    for row in db:nrows("select count(*) from globals where name='" .. name .. "'") do
+    for row in db:nrows("select count(*) from GLOBALS where name='" .. name .. "'") do
         found = row["count(*)"] > 0
     end
     return found
@@ -66,7 +66,7 @@ function add_global(name, value)
     with_globals_db_connection(function(db)
         if not name_exists(db, name) then
             local result = db:execute(
-                "INSERT INTO globals VALUES('" .. name .. "','" .. value .. "');"
+                "insert into GLOBALS VALUES('" .. name .. "','" .. value .. "');"
             )
         end
     end)
@@ -75,14 +75,14 @@ end
 
 function set_global(name, value)
     return with_globals_db_connection(function(db)
-        db:execute("update globals set value='" .. value .. "' where name='" .. name .. "'")
+        db:execute("update GLOBALS set value='" .. value .. "' where name='" .. name .. "'")
     end)
 end
 
 
 function get_global(name)
     return with_globals_db_connection(function(db)
-        for row in db:nrows("select value from globals where name='" .. name .. "'") do
+        for row in db:nrows("select value from GLOBALS where name='" .. name .. "'") do
             -- hs.alert.show(hs.inspect(row))
             return row["value"]
         end

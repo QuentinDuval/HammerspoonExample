@@ -1,50 +1,22 @@
 -- *****************************
--- String helpers
+-- Table helpers
 -- *****************************
 
-function string.is_empty(s)
-    return s == nil or s == ''
-end
-
-function string.split(inputstr, sep)
-    sep = sep or "%s"
-    local t = {}
-    for str in string.gmatch(inputstr, "([^" .. sep .. "]+)") do
-        table.insert(t, str)
+function table.clone(org)
+    -- local out = {table.unpack(org)}  -- Deals with the normal arrays only
+    local out = {}
+    for k, v in pairs(org) do
+        out[k] = v
     end
-    return t
+    return out
 end
 
--- *****************************
--- File helpers
--- *****************************
-
-function io.read_file(file_path)
-    local file = io.open(file_path, 'r')
-    assert(file)
-    local content = file:read('*a')
-    file:close()
-    return content
-end
-
-
-function io.iter_lines(file_path)
-    --[[
-    local file = io.open(file_path, 'r')
-    local line = file:read()
-    return function()
-        local prev_line = line
-        line = file:read()
-        return prev_line
+function table.clear(xs)
+    local count = #xs
+    for i = 0, count do
+        xs[i] = nil
     end
-    ]]
-    return io.lines(file_path)
 end
-
-
--- *****************************
--- List helpers
--- *****************************
 
 function table.reverse(t)
     local n = #t
@@ -54,6 +26,40 @@ function table.reverse(t)
         i = i + 1
         n = n - 1
     end
+end
+
+function table.slice(xs, first, last, step)
+    local sliced = {}
+    step = step or 1
+    if last < 0 then
+        last = #xs + last
+    end
+    for i = first, last or #xs, step do
+        table.insert(sliced, xs[i])
+    end
+    return sliced
+end
+
+function table.merge_dicts(first_table, second_table)
+    for k, v in pairs(second_table) do
+        first_table[k] = v
+    end
+    return first_table
+end
+
+--- Add default values to the first table
+-- @param first_table fields to keep
+-- @param defaults fields to add if missing
+-- @return a new table merging those
+function table.add_defaults(first_table, defaults)
+    local output = {}
+    for k, v in pairs(defaults) do
+        output[k] = v
+    end
+    for k, v in pairs(first_table) do
+        output[k] = v
+    end
+    return output
 end
 
 function table.enumerate(t)
@@ -82,7 +88,6 @@ function table.filter(t, pred)
     return output
 end
 
-
 function table.zip(x, y)
     local m = #x
     local n = #y
@@ -99,6 +104,93 @@ function table.zip(x, y)
     end
 end
 
+function table.combinations(possibilities)
+    local combis = {{}}
+    for i, possible in ipairs(possibilities) do
+        local name = possible.name
+        local values = possible.values
+        local next_combis = {}
+        for j, value in ipairs(values) do
+            for k, combi in ipairs(combis) do
+                local next_combi = table.clone(combi)
+                next_combi[name] = value
+                table.insert(next_combis, next_combi)
+            end
+        end
+        combis = next_combis
+    end
+    return combis
+end
+
+
+-- *****************************
+-- String helpers
+-- *****************************
+
+function string.is_empty(s)
+    return s == nil or s == ''
+end
+
+function string.startswith(String, Start)
+    return string.sub(String, 1, string.len(Start)) == Start
+end
+
+function string.join(delimiter, list)
+    local len = #list
+    if len == 0 then
+        return ""
+    end
+    local string = list[1]
+    for i = 2, len do
+        string = string .. delimiter .. list[i]
+    end
+    return string
+end
+
+function string.strip(str)
+    return str:match("^%s*(.-)%s*$")
+end
+
+function string.split(input_str, sep)
+    if sep == nil then
+        sep = "%s"
+    end
+    local output = {}
+    for str in string.gmatch(input_str, "([^" .. sep .. "]+)") do
+        table.insert(output, str)
+    end
+    return output
+end
+
+--- dedent a multiline string by removing any initial indent.
+-- useful when working with [[..]] strings.
+-- @param s the string
+-- @return a string with initial indent zero.
+function string.dedent(s)
+    local lines = string.split(s, '\n')
+    local i1, i2 = lines[1]:find('^%s*')
+    lines = hs.fnutils.imap(lines, function(line)
+        return string.sub(line, i2+1)
+    end)
+    return string.join('\n', lines)                
+end                 
+
+
+-- *****************************
+-- File helpers
+-- *****************************
+
+function io.read_file(file_path)
+    local file = io.open(file_path, 'r')
+    assert(file)
+    local content = file:read('*a')
+    file:close()
+    return content
+end
+
+function io.iter_lines(file_path)
+    return io.lines(file_path)
+end
 
 -- *****************************
 -- Copy paste helpers
@@ -112,10 +204,18 @@ function paste()
     hs.eventtap.keyStroke({"cmd"}, "v")
 end
 
-function with_temporary_copy(fn)
+function backup_pasteboard()
     hs.pasteboard.setContents(hs.pasteboard.getContents(), "TEMP")
-    fn()
+end
+
+function restore_pasteboard()
     hs.pasteboard.setContents(hs.pasteboard.getContents("TEMP"))
+end
+
+function with_temporary_copy(fn)
+    backup_pasteboard()
+    fn()
+    restore_pasteboard()
 end
 
 function get_selected_text()

@@ -1,24 +1,35 @@
---[[
-    Utilities to search menu-items inside menus
-]]
+-- *****************************
+-- Kind of pop up menu
+-- *****************************
+
+require "core.utils";
 
 
-function get_application_menu(ap, name)
-    local items = ap:getMenuItems()
-    return hs.fnutils.find(items, function(item)
-        return item.AXTitle == name
-    end)
+-- *****************************
+-- Pop-up menu object
+-- *****************************
+
+
+PopUpMenu = { menu_items={} }
+
+function PopUpMenu:new(m)
+    m = m or {}
+    setmetatable(m, self)
+    self.__index = self
+    return m
 end
 
+function PopUpMenu:separator()
+    table.insert(self.menu_items, {"-"})
+end
 
-function search_menu(menu_item, search)
-    local items = menu_item.AXChildren
-    for i, list in ipairs(items) do
-        for i, item in ipairs(list) do
-            if string.find(item.AXTitle, search) then
-                return item
-            end
-        end
-    end
-    return nil
+function PopUpMenu:add_item(title, fct)
+    table.insert(self.menu_items, { title = title, fn = fct })
+end
+
+function PopUpMenu:show()
+    local menubar = hs.menubar.new()
+    menubar:setMenu(self.menu_items)
+    local position_point = hs.mouse.getAbsolutePosition()
+    menubar:popupMenu(position_point)
 end

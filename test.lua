@@ -4,7 +4,7 @@
 ]]
 
 
-require "core.global_states";
+require "core.persistent_global";
 require "core.form";
 
 

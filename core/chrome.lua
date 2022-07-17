@@ -11,7 +11,20 @@ function new_chrome_tab_with(address)
     local browser = hs.application.open("Google Chrome", 0.1, true)
     browser:activate()
     hs.eventtap.keyStroke({"cmd"}, "t") -- open a new tab
-    hs.eventtap.keyStrokes(address) -- search in google
+    -- hs.eventtap.keyStrokes(address) -- search in google
+    write_lines(address) -- Much faster than the key strokes
+    hs.eventtap.keyStroke({}, "return") -- validate auto completion
+    hs.eventtap.keyStroke({}, "return") -- run the search
+end
+
+
+function new_chrome_tab_right_with(address)
+    local browser = hs.application.open("Google Chrome", 0.1, true)
+    browser:activate()
+    -- Requires to set the correct shortcut in:
+    -- System preferences > Keyboard > Shortcut > Application shortcuts
+    hs.eventtap.keyStroke({"cmd", "ctrl", "alt"}, "t") -- open a new tab to the right
+    write_lines(address) -- Much faster than the key strokes
     hs.eventtap.keyStroke({}, "return") -- validate auto completion
     hs.eventtap.keyStroke({}, "return") -- run the search
 end
@@ -37,15 +50,19 @@ function chrome_switch_to_tab(pattern, if_no_found)
     -- local item = ap:findMenuItem(pattern)
 
     -- So the technique is to search the "Tabs" menu manually
+
+    -- TODO:
+    --  * the tabs are grouped by window (to be improved)
+    --  * the windows are however available in "Windows" menu
+
     local ap = hs.application.find("Google Chrome")
     ap:activate(true)
-    local onglets = get_application_menu(ap, "Onglet")
+    local onglets = get_application_menu(ap, "Tab")
     local item = search_menu(onglets, pattern)
     if (item) then
-        ap:selectMenuItem({"Onglet", item.AXTitle})
+        ap:selectMenuItem({"Tab", item.AXTitle})
     elseif (if_no_found) then
-        ap:selectMenuItem("Nouvel onglet")
-        -- ap:selectMenuItem({"Fichier", "Nouvel onglet"})
+        ap:selectMenuItem("New Tab")
         hs.eventtap.keyStrokes(if_no_found)
         hs.eventtap.keyStroke({}, "return") -- validate auto completion
         hs.eventtap.keyStroke({}, "return") -- run the search

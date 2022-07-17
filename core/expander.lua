@@ -1,16 +1,20 @@
---[[
-    Generic object which allows to search for content and run
-    the associated function.
-]]
+
+-- *****************************
+-- Kind of text expander
+-- *****************************
 
 require "core.utils";
 
 
-Expander = {
-    options={},
-    with_sorting=false,
-}
+-- *****************************
+-- Expander object
+-- *****************************
 
+
+Expander = {
+    options = {},
+    with_sorting = false,
+}
 
 function Expander:new(e)
     e = e or {}
@@ -19,114 +23,138 @@ function Expander:new(e)
     return e
 end
 
-
 function Expander:add_choice(text, subText, fct)
     table.insert(self.options, {
         text=text,
         subText=subText,
-        fct=fct,
-    })
+        fct=fct}
+    )
 end
 
-
 function Expander:apply_rule(input)
-    local rule = hs.fnutils.find(self.options, function(o)
-        return o.text == input
-    end)
-    if rule ~= nil then
-        if rule.fct ~= nil then
-            rule.fct()
-        else
-            write_lines(rule.content)
+    for i, o in ipairs(self.options) do
+        if o.text == input then
+            if o["line"] ~= nil then
+                hs.eventtap.keyStrokes(o.line)
+            elseif o["content"] ~= nil then
+                write_lines(o.content)
+            else
+                o.fct()
+            end
         end
     end
 end
 
+function Expander:without_sort()
+    self.with_sorting = false
+end
 
-function Expander:show(on_hide)
+function Expander:show()
     local focused = hs.window.focusedWindow()
+
+    -- Building the list of choices we can search into
     local all_choices = {}
     for i, e in ipairs(self.options) do
-        table.insert(all_choices, {
-            image=hs.image.imageFromName("NSBonjour"),
-            -- image=hs.image.imageFromName("NSTouchBarAddDetailTemplate"),
-            -- image=hs.image.imageFromName("NSTouchBarPlayTemplate"),
-            -- image=hs.image.imageFromName("NSTouchBarGoForwardTemplate"),
-            -- image=hs.image.imageFromName("NSTouchBarSlideshowTemplate"),
-            text=e.text,
-            subText=e.subText,
-        })
+        local subText = e.subText
+        if subText == nil then
+            subText = e.text
+        end
+        table.insert(all_choices, {text=e.text, subText=subText})
     end
-
-    --[[
-    for i, name in pairs(hs.image.systemImageNames) do
-        table.insert(all_choices, {
-            image=hs.image.imageFromName(name),
-            text=name,
-        })
-    end
-    ]]
 
     if self.with_sorting then
         table.sort(all_choices, function(l, r) return l.text < r.text end)
     end
 
-    local chooser = hs.chooser.new(function(choice)
-        focused:focus();
-        if not choice then return end
-        self:apply_rule(choice.text)
-    end)
-
-    --[[
-    t = require("hs.webview.toolbar")
-    a = t.new("myConsole", {
-            { id = "select1", selectable = true, image = hs.image.imageFromName("NSStatusAvailable") },
-            { id = "NSToolbarSpaceItem" },
-            { id = "select2", selectable = true, image = hs.image.imageFromName("NSStatusUnavailable") },
-            { id = "notShown", default = false, image = hs.image.imageFromName("NSBonjour") },
-            { id = "NSToolbarFlexibleSpaceItem" },
-            { id = "navGroup", label = "Navigation", groupMembers = { "navLeft", "navRight" }},
-            { id = "navLeft", image = hs.image.imageFromName("NSGoLeftTemplate"), allowedAlone = false },
-            { id = "navRight", image = hs.image.imageFromName("NSGoRightTemplate"), allowedAlone = false },
-            { id = "NSToolbarFlexibleSpaceItem" },
-            { id = "cust", label = "customize", fn = function(t, w, i) t:customizePanel() end, image = hs.image.imageFromName("NSAdvanced") }
-        }):canCustomize(true)
-          :autosaves(true)
-          :selectedItem("select2")
-          :setCallback(function(...)
-                            print("a", inspect(table.pack(...)))
-                       end)
-    
-    chooser:attachedToolbar(a)
-    ]]
-
-    -- Searching for all query parts where query
-    -- parts are separated with the '+' sign
-    chooser:queryChangedCallback(function(query)
-        local query_parts = hs.fnutils.split(query, "+")
-        local choices = hs.fnutils.ifilter(
-            all_choices,
-            function(choice)
-                return hs.fnutils.every(
-                    query_parts,
-                    function(query_part)
-                        return string.match(choice.text, query_part)
-                    end
-                )
+    -- The filtering function that will be used to filter out choices:
+    -- * all words separated with '+' need to be found
+    -- * lower case is used to make it simpler
+    function filter_choices(input_choices, q)
+        local words = hs.fnutils.split(q, " ")
+        local words_to_find = {}
+        local words_to_avoid = {}
+        for i, word in ipairs(words) do
+            if string.sub(word, 1, 1) == "-" then
+                -- Find those starting with "-" and move them to words to remove
+                if string.len(word) > 1 then
+                    table.insert(words_to_avoid, string.sub(word, 2))
+                end
+            else
+                -- Else we need to find those words
+                table.insert(words_to_find, word)
             end
-        )
-        chooser:choices(choices)
-    end)
-
-    if on_hide ~= nil then
-        chooser:hideCallback(on_hide)
+        end
+        return hs.fnutils.filter(input_choices, function(choice)
+            local text = string.lower(choice.text)
+            local all_found = hs.fnutils.every(words_to_find, function(word)
+                return string.find(text, string.lower(word))
+            end)
+            local none_found = hs.fnutils.every(words_to_avoid, function(word)
+                return not string.find(text, string.lower(word))
+            end)
+            return all_found and none_found
+        end)
     end
+
+    -- Creating a chooser that will run the selected rule(s)
+    local chooser_ref = {}; -- used for self reference
+    local chooser = hs.chooser.new(function(choice)
+        if focused ~= nil then
+            focused:focus();
+        end
+        local modifiers = hs.eventtap.checkKeyboardModifiers()
+        if modifiers.shift then
+            -- Multiple command run:
+            -- * fetch the commands to run
+            local q = chooser_ref.chooser:query()
+            local choices = filter_choices(all_choices, q)
+            -- * dump them into a file
+            hs.eventtap.keyStrokes("cat >run.sh  <<EOL")
+            hs.eventtap.keyStroke({}, "return")
+            for i, choice in ipairs(choices) do
+                self:apply_rule(choice.text)
+                hs.eventtap.keyStroke({}, "return")
+            end
+            hs.eventtap.keyStrokes("EOL")
+            hs.eventtap.keyStroke({}, "return")
+        else
+            -- Single command run
+            if not choice then return end
+            self:apply_rule(choice.text)
+        end
+    end)
+    chooser_ref.chooser = chooser
+
+    -- Adding a callback for running all matching rules
+    chooser:rightClickCallback(function(choice)
+        local q = chooser:query()
+        local choices = filter_choices(all_choices, q)
+
+        -- We need to hide and cancel the chooser or else it will stay
+        -- whereas what we want to do is close it and run all commands
+        chooser:hide();
+        chooser:cancel();
+
+        focused:focus();
+        for i, choice in ipairs(choices) do
+            self:apply_rule(choice.text)
+        end
+    end)
 
     -- hs.focus()
     hs.dockicon.hide() -- important so that it appears in front in any space
-    -- chooser:searchSubText(true)
     chooser:choices(all_choices)
     chooser:rows(5)
-    chooser:bgDark(true)
+    -- chooser:bgDark(true)
+
+    -- Custom filtering function, allowing to have several search keywords
+    -- each keyword being separated with "+"
+    chooser:queryChangedCallback(function(q)
+        local choices = filter_choices(all_choices, q)
+        chooser:choices(choices)
+        return chooser
+    end)
+
+    -- Display the window
     chooser:show()
 end
