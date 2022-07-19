@@ -67,7 +67,9 @@ function Expander:show()
     end
 
     -- The filtering function that will be used to filter out choices:
-    -- * all words separated with '+' need to be found
+    -- * all words separated with ' ' need to be found
+    -- * all words prefixed with '-' need to be removed
+    -- * the disjunction is supported via '|' (but no parenthesis)
     -- * lower case is used to make it simpler
     function filter_choices(input_choices, q)
         local words = hs.fnutils.split(q, " ")
@@ -87,7 +89,16 @@ function Expander:show()
         return hs.fnutils.filter(input_choices, function(choice)
             local text = string.lower(choice.text)
             local all_found = hs.fnutils.every(words_to_find, function(word)
-                return string.find(text, string.lower(word))
+                if word == "" then
+                    return true
+                end
+                local disjunction = hs.fnutils.split(word, "|")
+                for i, w in ipairs(disjunction) do
+                    if string.find(text, string.lower(w)) then
+                        return true
+                    end
+                end
+                return false
             end)
             local none_found = hs.fnutils.every(words_to_avoid, function(word)
                 return not string.find(text, string.lower(word))
